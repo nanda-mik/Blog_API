@@ -8,6 +8,7 @@ const uuidv4 = require('uuidv4');
 dotenv.config();
 
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -48,12 +49,14 @@ app.use((req,res,next)=>{
 })
 
 app.use('/feed', feedRoutes);
+app.use('/auth',authRoutes);
 
 app.use((error, req, res, next) => {
-    console.log(err);
+    console.log(error);
     const status = error.statusCode || 500;
     const message = error.message;
-    res.status(status).json({message: message});
+    const data = error.data;
+    res.status(status).json({message: message, data: data});
 })
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
